@@ -1,0 +1,46 @@
+{
+  "name": "@dawood/cli",
+  "version": "1.0.0",
+  "description": "Dawood AI Chatbot — Powerful open-source AI agent for your terminal",
+  "type": "module",
+  "bin": {
+    "dawood": "./bin/dawood.js"
+  },
+  "main": "./src/index.js",
+  "files": [
+    "bin",
+    "src",
+    "README.md"
+  ],
+  "scripts": {
+    "start": "node bin/dawood.js",
+    "dev": "node --watch bin/dawood.js",
+    "prepublishOnly": "node --check src/index.js"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "ora": "^8.1.1",
+    "boxen": "^7.1.1",
+    "gradient-string": "^2.0.2",
+    "figlet": "^1.8.0",
+    "commander": "^12.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "ai",
+    "chatbot",
+    "cli",
+    "terminal",
+    "dawood",
+    "open-source",
+    "anthropic",
+    "openai",
+    "agent"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  }
+}
