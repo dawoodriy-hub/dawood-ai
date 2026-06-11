@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dawood AI — Demo UI</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">Coddy <span class="blue">Build</span></div>
+      <nav>
+        <a class="active">Home</a>
+        <a>Templates</a>
+        <a class="soon">Community</a>
+        <div class="section">PROJECTS</div>
+        <a>All projects</a>
+        <a>Starred</a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="hero">
+        <h1>What do you want to <span class="accent-blue">build</span>, <span class="name">you?</span></h1>
+        <div class="input-card">
+          <div class="editor-pulse">◈</div>
+          <textarea placeholder="Describe the app you want to build..."></textarea>
+          <div class="controls">
+            <div class="select">Standard ▾</div>
+            <button class="send">▲</button>
+          </div>
+        </div>
+
+        <section class="mock-editor">
+          <div class="files">
+            <div class="file active">main.py</div>
+          </div>
+          <div class="editor-area">
+            <div class="tabs">
+              <div class="tab">main.py</div>
+            </div>
+            <div class="code" contenteditable="true" spellcheck="false"># Start typing your Python here</div>
+            <button id="run" class="run">▶ Run Code</button>
+          </div>
+        </section>
+
+        <section class="console" id="console">
+          <div class="console-title">CONSOLE</div>
+          <div class="console-body" id="console-body">Click "Run Code" to see your output here</div>
+        </section>
+      </header>
+    </main>
+  </div>
+  <script src="./main.js"></script>
+</body>
+</html>
