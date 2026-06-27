@@ -1,0 +1,14 @@
+# Code owners — these people are automatically requested for review on any PR.
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owner for everything
+* @dawoodriy-hub
+
+# CLI package
+/packages/cli/ @dawoodriy-hub
+
+# Web app
+/packages/web/ @dawoodriy-hub
+
+# CI / GitHub config
+/.github/ @dawoodriy-hub

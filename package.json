@@ -1,0 +1,19 @@
+{
+  "name": "dawood-ai",
+  "version": "1.0.0",
+  "description": "Dawood AI — Open-source AI agent for your terminal and browser",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:cli": "npm run dev --workspace=packages/cli",
+    "dev:web": "npm run dev --workspace=packages/web",
+    "build:web": "npm run build --workspace=packages/web"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}

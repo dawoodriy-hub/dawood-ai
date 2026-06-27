@@ -1,0 +1,27 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug CLI",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/packages/cli/bin/dawood.js",
+      "cwd": "${workspaceFolder}/packages/cli",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "Debug CLI (watch)",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/packages/cli/bin/dawood.js",
+      "cwd": "${workspaceFolder}/packages/cli",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": ["<node_internals>/**"],
+      "runtimeArgs": ["--watch"]
+    }
+  ],
+  "compounds": []
+}
