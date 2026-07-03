@@ -1,0 +1,40 @@
+name: Upload
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build-and-upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - uses: actions/checkout@v3
+
+      # Setup Node.js environment
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      # Install dependencies
+      - run: npm install
+
+      # Build CLI package
+      - run: npm run build:web
+
+      # Upload build artifacts
+      - name: Upload Web Build Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: web-build
+          path: packages/web/dist/
+
+      # Upload CLI package
+      - name: Upload CLI Package
+        uses: actions/upload-artifact@v3
+        with:
+          name: cli-package
+          path: packages/cli/
