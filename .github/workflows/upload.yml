@@ -27,14 +27,14 @@ jobs:
 
       # Upload build artifacts
       - name: Upload Web Build Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: web-build
           path: packages/web/dist/
 
       # Upload CLI package
       - name: Upload CLI Package
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: cli-package
           path: packages/cli/
