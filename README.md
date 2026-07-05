@@ -24,16 +24,6 @@ npm install -g .
 dawood
 ```
 
-### First-time setup
-
-```
-  › /key sk-ant-YOUR_ANTHROPIC_KEY
-  ✓ API key saved to ~/.dawood/config.json
-
-  › Hello, what can you do?
-  Dawood › I can help you write and debug code, explain concepts...
-```
-
 ---
 
 ## CLI Commands
@@ -49,15 +39,6 @@ dawood
 | `/export` | Export conversation to a Markdown file |
 | `/clear` | Clear conversation history |
 | `/exit` | Quit Dawood AI |
-
----
-
-## Supported Providers
-
-| Provider | Models | Get API Key |
-|---|---|---|
-| **Anthropic** (default) | claude-sonnet-4-20250514, claude-opus-4, claude-haiku-4 | [console.anthropic.com](https://console.anthropic.com) |
-| **OpenAI** | gpt-4o, gpt-4o-mini, gpt-4-turbo | [platform.openai.com](https://platform.openai.com) |
 
 ---
 
