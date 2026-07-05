@@ -31,8 +31,6 @@ dawood
 | Command | Description |
 |---|---|
 | `/help` | Show all available commands |
-| `/key <api_key>` | Set your API key (Anthropic or OpenAI) |
-| `/provider anthropic\|openai` | Switch AI provider |
 | `/model <name>` | Switch model (e.g. `gpt-4o`, `claude-sonnet-4-20250514`) |
 | `/config` | View current configuration |
 | `/system <prompt>` | Set a custom system prompt |
@@ -125,22 +123,6 @@ dawood-ai/
                 └── constants.jsx       # Shared config (providers, models, features)
 ```
 
----
-
-## Config File (CLI)
-
-Config is stored at `~/.dawood/config.json`:
-
-```json
-{
-  "provider": "anthropic",
-  "model": "claude-sonnet-4-20250514",
-  "apiKey": "sk-ant-...",
-  "systemPrompt": "You are Dawood AI...",
-  "streaming": true,
-  "maxTokens": 4096
-}
-```
 
 ---
 
