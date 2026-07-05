@@ -70,13 +70,14 @@ npm run dev
 # → http://localhost:3000
 ```
 
-The web app uses your API key directly in the browser — it's never sent to any server. Your key is stored only in memory (cleared on page refresh).
+The web app now supports sign-in with Microsoft, Google, GitHub, or Apple and asks for a display name and date of birth before entering chat. It currently runs locally in the browser and uses a fallback response path when no external AI provider is configured.
 
 ### Features
 - Beautiful homepage (dark theme, aurora background)
-- Enter your Anthropic or OpenAI API key to start chatting
+- Sign in without an API key using OAuth-style auth providers
+- Submit your display name and date of birth before chattingG
+- Local demo response mode for a browser-only experience
 - Live streaming responses with stop button
-- Model selector per session
 - Export conversation to Markdown
 - Quick-prompt chips
 
@@ -135,11 +136,12 @@ dawood-ai/
             │   ├── AuroraBackground.jsx # Animated background blobs
             │   ├── Navbar.jsx           # Top navigation bar
             │   ├── HomePage.jsx         # Landing page
-            │   ├── ApiKeyModal.jsx      # API key entry modal
+            │   ├── AuthModal.jsx        # OAuth-style login modal
+            │   ├── ProfileModal.jsx     # Profile collection after sign-in
             │   └── ChatPage.jsx         # Full chat interface
             └── lib/
-                ├── streamApi.js         # Browser SSE streaming (Anthropic + OpenAI)
-                └── constants.js         # Shared config (providers, models, features)
+                ├── streamApi.js         # Browser streaming API and local fallback
+                └── constants.jsx       # Shared config (providers, models, features)
 ```
 
 ---

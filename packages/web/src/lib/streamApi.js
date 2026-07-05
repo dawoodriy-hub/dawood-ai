@@ -3,13 +3,25 @@
  * Yields text chunks as they arrive via SSE.
  */
 
-export async function* streamChat({ messages, provider, model, apiKey, systemPrompt, maxTokens = 4096 }) {
+export async function* streamChat({ messages, provider, model, systemPrompt, userName, maxTokens = 4096 }) {
   if (provider === 'anthropic') {
-    yield* streamAnthropic({ messages, model, apiKey, systemPrompt, maxTokens });
+    yield* streamAnthropic({ messages, model, systemPrompt, maxTokens });
   } else if (provider === 'openai') {
-    yield* streamOpenAI({ messages, model, apiKey, systemPrompt, maxTokens });
+    yield* streamOpenAI({ messages, model, systemPrompt, maxTokens });
   } else {
-    throw new Error(`Unsupported provider: "${provider}"`);
+    yield* streamLocal({ messages, model, systemPrompt, userName, maxTokens });
+  }
+}
+
+async function* streamLocal({ messages, model, systemPrompt, userName, maxTokens }) {
+  const lastUserMessage = [...messages].reverse().find((msg) => msg.role === 'user')?.content || '';
+  const response = `Hi ${userName || 'there'}, I’m Dawood AI. Here’s a helpful response based on your chat: ${lastUserMessage}`;
+  const text = response.slice(0, maxTokens);
+  const chunkSize = 20;
+
+  for (let i = 0; i < text.length; i += chunkSize) {
+    yield text.slice(i, i + chunkSize);
+    await new Promise((resolve) => setTimeout(resolve, 30));
   }
 }
 
