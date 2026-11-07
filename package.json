@@ -8,9 +8,15 @@
     "packages/*"
   ],
   "scripts": {
+    "dev": "concurrently -n web,server -c cyan,magenta \"npm run dev:web\" \"npm run dev:server\"",
     "dev:cli": "npm run dev --workspace=packages/cli",
     "dev:web": "npm run dev --workspace=packages/web",
+    "dev:server": "npm run start --workspace=@dawood/server",
+    "start:server": "node packages/server/src/index.js",
     "build:web": "npm run build --workspace=packages/web"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1"
   },
   "engines": {
     "node": ">=18.0.0",

@@ -42,23 +42,24 @@ dawood
 
 ## Web App
 
+From the repo root:
+
 ```bash
-cd packages/web
 npm install
 npm run dev
-# → http://localhost:3000
+# web → http://localhost:3000
+# server → http://localhost:8787
 ```
 
-The web app now supports sign-in with Microsoft, Google, GitHub, or Apple and asks for a display name and date of birth before entering chat. It currently runs locally in the browser and uses a fallback response path when no external AI provider is configured.
+No API key is required. Sign-in is local to this browser (email + display name). Chats are saved in localStorage.
 
 ### Features
-- Beautiful homepage (dark theme, aurora background)
-- Sign in without an API key using OAuth-style auth providers
-- Submit your display name and date of birth before chattingG
-- Local demo response mode for a browser-only experience
-- Live streaming responses with stop button
-- Export conversation to Markdown
-- Quick-prompt chips
+- Dark homepage and chat UI
+- Streaming replies with a stop button
+- Free Dawood AI model (optional OpenRouter models if you later add a key)
+- Tools: current time, calculator, web search
+- Markdown replies, saved chats, export to Markdown
+- Optional voice input and speak-last-reply (browser APIs)
 
 ---
 
@@ -97,37 +98,25 @@ npm run dev
 
 ```
 dawood-ai/
+├── .env.example              # optional settings
 ├── package.json              # Monorepo root (npm workspaces)
 └── packages/
     ├── cli/                  # @dawood/cli — Terminal agent
-    │   ├── bin/dawood.js     # Entry point
+    ├── server/               # @dawood/server — OpenRouter proxy + tools
     │   └── src/
-    │       ├── index.js      # REPL main loop
-    │       ├── api.js        # Streaming SSE — Anthropic & OpenAI
-    │       ├── config.js     # Config r/w → ~/.dawood/config.json
-    │       └── ui.js         # Terminal UI (chalk, boxen, figlet)
+    │       ├── index.js      # HTTP API on :8787
+    │       ├── openrouter.js # Streaming + tool loop
+    │       ├── tools.js      # time, calculator, web_search
+    │       └── models.js     # Allowlisted models
     └── web/                  # @dawood/web — React + Vite frontend
-        ├── index.html
         └── src/
-            ├── App.jsx                  # Root — routing between pages
-            ├── index.css                # Design tokens & keyframes
-            ├── components/
-            │   ├── AuroraBackground.jsx # Animated background blobs
-            │   ├── Navbar.jsx           # Top navigation bar
-            │   ├── HomePage.jsx         # Landing page
-            │   ├── AuthModal.jsx        # OAuth-style login modal
-            │   ├── ProfileModal.jsx     # Profile collection after sign-in
-            │   └── ChatPage.jsx         # Full chat interface
-            └── lib/
-                ├── streamApi.js         # Browser streaming API and local fallback
-                └── constants.jsx       # Shared config (providers, models, features)
+            ├── App.jsx
+            ├── components/ChatPage.jsx
+            └── lib/streamApi.js  # POST /api/chat (proxied to server)
 ```
-
 
 ---
 
 ## License
 
 MIT © Dawood AI Contributors
-# dawood-ai
-# dawood-ai

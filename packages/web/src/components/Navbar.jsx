@@ -1,4 +1,4 @@
-export default function Navbar({ onSignIn }) {
+export default function Navbar({ onSignIn, onNavigate }) {
   return (
     <nav style={{
       position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
@@ -27,9 +27,13 @@ export default function Navbar({ onSignIn }) {
         {['Features', 'Docs', 'GitHub'].map(l => (
           <a
             key={l}
-            href={l === 'GitHub' ? 'https://github.com/dawoodriy-hub/dawood-ai' : '#'}
+            href={l === 'GitHub' ? 'https://github.com/dawoodriy-hub/dawood-ai' : `#${l.toLowerCase()}`}
             target={l === 'GitHub' ? '_blank' : undefined}
             rel={l === 'GitHub' ? 'noreferrer' : undefined}
+            onClick={l === 'GitHub' ? undefined : (event) => {
+              event.preventDefault();
+              onNavigate(l.toLowerCase());
+            }}
             style={{
               color: '#64748b', textDecoration: 'none', fontSize: 14,
               fontWeight: 500, letterSpacing: '0.02em', transition: 'color 0.2s',

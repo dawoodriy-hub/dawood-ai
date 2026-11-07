@@ -1,10 +1,23 @@
 import { useState } from 'react';
 import AuroraBackground from './AuroraBackground.jsx';
 import Navbar from './Navbar.jsx';
-import { FEATURES, SAMPLE_PROMPTS } from '../lib/constants.jsx';
+import { FEATURES, MODEL_PROFILES, SAMPLE_PROMPTS } from '../lib/constants.jsx';
+
+const CLI_COMMANDS = [
+  ['/help', 'Show all available commands.'],
+  ['/model <name>', 'Switch the active AI model.'],
+  ['/system <prompt>', 'Set a custom system prompt.'],
+  ['/config', 'View the current configuration.'],
+  ['/export', 'Save the conversation as Markdown.'],
+  ['/clear', 'Clear the terminal conversation.'],
+];
 
 export default function HomePage({ onSignIn }) {
   const [inputValue, setInputValue] = useState('');
+
+  function scrollToSection(sectionId) {
+    document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 
   function handleKeyDown(e) {
     if (e.key === 'Enter' && inputValue.trim()) onSignIn();
@@ -13,7 +26,7 @@ export default function HomePage({ onSignIn }) {
   return (
     <div style={{ minHeight: '100vh', background: '#050a14' }}>
       <AuroraBackground />
-      <Navbar onSignIn={onSignIn} />
+      <Navbar onSignIn={onSignIn} onNavigate={scrollToSection} />
 
       <main
         style={{
@@ -197,6 +210,7 @@ export default function HomePage({ onSignIn }) {
 
         {/* Feature cards */}
         <section
+          id="features"
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
@@ -205,6 +219,7 @@ export default function HomePage({ onSignIn }) {
             width: '100%',
             padding: '0 24px',
             marginBottom: 80,
+            scrollMarginTop: 96,
           }}
         >
           {FEATURES.map(({ icon, title, desc, color }) => (
@@ -241,8 +256,62 @@ export default function HomePage({ onSignIn }) {
           ))}
         </section>
 
-        {/* Terminal preview */}
-        <section style={{ width: '100%', maxWidth: 680, padding: '0 24px' }}>
+        {/* Model profiles */}
+        <section style={{ width: '100%', maxWidth: 900, padding: '0 24px', marginBottom: 80 }}>
+          <div style={{ textAlign: 'center', marginBottom: 24 }}>
+            <h2
+              style={{
+                margin: '0 0 8px', color: '#e2e8f0', fontFamily: 'var(--font-display)',
+                fontSize: 30, fontWeight: 500,
+              }}
+            >
+              Five ways to work with Dawood
+            </h2>
+            <p style={{ margin: 0, color: '#64748b', fontSize: 14 }}>
+              Choose the free mode that fits the task. You can switch modes any time in a chat.
+            </p>
+          </div>
+          <div
+            style={{
+              display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: 14,
+            }}
+          >
+            {MODEL_PROFILES.map(({ name, summary, color }) => (
+              <article
+                key={name}
+                style={{
+                  padding: '20px 18px', borderRadius: 14, background: 'rgba(12,21,38,0.6)',
+                  border: '1px solid rgba(255,255,255,0.06)', backdropFilter: 'blur(20px)',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                  <span style={{ width: 8, height: 8, borderRadius: '50%', background: color, boxShadow: `0 0 14px ${color}` }} />
+                  <h3 style={{ margin: 0, color: '#e2e8f0', fontSize: 15, fontWeight: 700 }}>{name}</h3>
+                </div>
+                <p style={{ margin: 0, color: '#64748b', fontSize: 13, lineHeight: 1.6 }}>{summary}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        {/* Quick-start documentation */}
+        <section
+          id="docs"
+          style={{ width: '100%', maxWidth: 680, padding: '0 24px', scrollMarginTop: 96 }}
+        >
+          <div style={{ marginBottom: 20, textAlign: 'center' }}>
+            <h2
+              style={{
+                margin: '0 0 8px', color: '#e2e8f0', fontFamily: 'var(--font-display)',
+                fontSize: 28, fontWeight: 500,
+              }}
+            >
+              Documentation
+            </h2>
+            <p style={{ margin: 0, color: '#64748b', fontSize: 14 }}>
+              Start in the browser or install the CLI for terminal conversations.
+            </p>
+          </div>
           <div
             style={{
               background: '#0a0f1a',
@@ -310,6 +379,74 @@ export default function HomePage({ onSignIn }) {
               </div>
             </div>
           </div>
+          <div
+            style={{
+              display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+              gap: 16, marginTop: 16,
+            }}
+          >
+            <article
+              style={{
+                padding: 20, borderRadius: 16, background: 'rgba(12,21,38,0.6)',
+                border: '1px solid rgba(255,255,255,0.06)', lineHeight: 1.6,
+              }}
+            >
+              <h3 style={{ margin: '0 0 10px', color: '#e2e8f0', fontSize: 16 }}>Run locally</h3>
+              <p style={{ margin: '0 0 14px', color: '#64748b', fontSize: 13 }}>
+                Dawood AI needs Node.js 18 or newer. From the project folder, install packages and
+                start both the web app and API server.
+              </p>
+              <pre
+                style={{
+                  margin: 0, padding: 14, overflowX: 'auto', borderRadius: 10,
+                  background: 'rgba(0,0,0,0.3)', color: '#00d4ff', fontSize: 12,
+                  fontFamily: 'var(--font-mono)',
+                }}
+              >{`npm install\nnpm run dev`}</pre>
+              <p style={{ margin: '12px 0 0', color: '#475569', fontSize: 12 }}>
+                Then open <span style={{ color: '#94a3b8' }}>http://localhost:3000</span>.
+              </p>
+            </article>
+
+            <article
+              style={{
+                padding: 20, borderRadius: 16, background: 'rgba(12,21,38,0.6)',
+                border: '1px solid rgba(255,255,255,0.06)', lineHeight: 1.6,
+              }}
+            >
+              <h3 style={{ margin: '0 0 10px', color: '#e2e8f0', fontSize: 16 }}>Use the web app</h3>
+              <ol style={{ margin: 0, paddingLeft: 20, color: '#64748b', fontSize: 13 }}>
+                <li style={{ marginBottom: 8 }}>Select <span style={{ color: '#94a3b8' }}>Sign up free</span> or <span style={{ color: '#94a3b8' }}>Log in</span>.</li>
+                <li style={{ marginBottom: 8 }}>Enter your email and add a display name.</li>
+                <li>Ask a question, use a suggested prompt, or start a new chat.</li>
+              </ol>
+              <p style={{ margin: '14px 0 0', color: '#475569', fontSize: 12 }}>
+                Your local profile and chats stay in this browser's local storage.
+              </p>
+            </article>
+          </div>
+
+          <article
+            style={{
+              marginTop: 16, padding: 20, borderRadius: 16, background: 'rgba(12,21,38,0.6)',
+              border: '1px solid rgba(255,255,255,0.06)',
+            }}
+          >
+            <h3 style={{ margin: '0 0 6px', color: '#e2e8f0', fontSize: 16 }}>CLI command reference</h3>
+            <p style={{ margin: '0 0 14px', color: '#64748b', fontSize: 13 }}>
+              Run <span style={{ color: '#00d4ff', fontFamily: 'var(--font-mono)' }}>dawood</span> after installing the CLI, then use these slash commands.
+            </p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '10px 24px' }}>
+              {CLI_COMMANDS.map(([command, description]) => (
+                <div key={command} style={{ display: 'flex', gap: 10, alignItems: 'baseline' }}>
+                  <code style={{ color: '#00d4ff', fontFamily: 'var(--font-mono)', fontSize: 12, whiteSpace: 'nowrap' }}>
+                    {command}
+                  </code>
+                  <span style={{ color: '#64748b', fontSize: 12 }}>{description}</span>
+                </div>
+              ))}
+            </div>
+          </article>
         </section>
       </main>
     </div>

@@ -1,9 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { getUser } from '../lib/authStorage.js';
 
 export default function ProfileModal({ onClose, onConfirm }) {
   const [displayName, setDisplayName] = useState('');
   const [dob, setDob] = useState('');
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    try {
+      const session = JSON.parse(localStorage.getItem('dawood-ai-session') || '{}');
+      const email = session?.email?.toLowerCase();
+      if (email) {
+        const user = getUser(email);
+        if (user?.displayName) setDisplayName(user.displayName);
+        if (user?.dob) setDob(user.dob);
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -11,11 +26,7 @@ export default function ProfileModal({ onClose, onConfirm }) {
       setError('Please tell us what to call you.');
       return;
     }
-    if (!dob) {
-      setError('Please enter your date of birth.');
-      return;
-    }
-    onConfirm({ displayName: displayName.trim(), dob });
+    onConfirm({ displayName: displayName.trim(), dob: dob || null });
   }
 
   return (
@@ -58,7 +69,7 @@ export default function ProfileModal({ onClose, onConfirm }) {
             Before chatting...
           </h2>
           <p style={{ color: '#64748b', fontSize: 14, lineHeight: 1.6 }}>
-            Tell us what to call you and your date of birth so we can personalize your experience.
+            Tell us what to call you. Date of birth is optional and stays on this device.
           </p>
         </div>
 
