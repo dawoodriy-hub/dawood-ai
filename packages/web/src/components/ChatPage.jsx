@@ -37,6 +37,19 @@ function DAvatar({ size = 32 }) {
   );
 }
 
+function readClipboardMedia(event) {
+  return Array.from(event.clipboardData?.files || [])
+    .filter((file) => file.type.startsWith('image/') || file.type.startsWith('video/'))
+    .slice(0, 4)
+    .map((file) => ({
+      id: `${file.name}-${file.lastModified}-${Math.random()}`,
+      name: file.name || (file.type.startsWith('image/') ? 'pasted image' : 'pasted video'),
+      type: file.type,
+      src: URL.createObjectURL(file),
+      file,
+    }));
+}
+
 function TypingDots() {
   return (
     <div
@@ -100,6 +113,7 @@ export default function ChatPage({ session, onSignOut }) {
   });
   const [activeId, setActiveId] = useState(() => conversations[0]?.id);
   const [input, setInput] = useState('');
+  const [attachments, setAttachments] = useState([]);
   const [isStreaming, setIsStreaming] = useState(false);
   const [models, setModels] = useState([{ value: 'openai-fast', label: 'Dawood AI' }]);
   const [model, setModel] = useState('openai-fast');
@@ -144,14 +158,16 @@ export default function ChatPage({ session, onSignOut }) {
   }, [activeId]);
 
   const sendMessage = useCallback(async () => {
-    if (!input.trim() || isStreaming || !active) return;
+    if ((!input.trim() && !attachments.length) || isStreaming || !active) return;
 
     const userText = input.trim();
+    const media = attachments;
     setInput('');
+    setAttachments([]);
     setError('');
     setToolHint('');
 
-    const history = [...messages, { role: 'user', content: userText }];
+    const history = [...messages, { role: 'user', content: userText || 'Please inspect the attached media.', attachments: media }];
     updateActive((chat) => ({
       ...chat,
       title: chat.title === 'New chat' ? titleFromText(userText) : chat.title,
@@ -166,7 +182,11 @@ export default function ChatPage({ session, onSignOut }) {
       let response = '';
       const apiMessages = history.filter(
         (m) => m.role === 'user' || (m.role === 'assistant' && m.content)
-      );
+      ).map(({ role, content, attachments: attached }) => ({
+        role,
+        content,
+        attachments: attached?.map(({ name, type }) => ({ name, type })) || [],
+      }));
 
       for await (const event of streamChat({
         messages: apiMessages,
@@ -211,7 +231,22 @@ export default function ChatPage({ session, onSignOut }) {
       setIsStreaming(false);
       abortRef.current = null;
     }
-  }, [input, isStreaming, active, messages, model, systemPrompt, updateActive]);
+  }, [input, attachments, isStreaming, active, messages, model, systemPrompt, updateActive]);
+
+  function handlePaste(e) {
+    const media = readClipboardMedia(e);
+    if (!media.length) return;
+    e.preventDefault();
+    setAttachments((current) => [...current, ...media].slice(0, 4));
+  }
+
+  function removeAttachment(id) {
+    setAttachments((current) => {
+      const item = current.find((attachment) => attachment.id === id);
+      if (item?.src) URL.revokeObjectURL(item.src);
+      return current.filter((attachment) => attachment.id !== id);
+    });
+  }
 
   function handleKeyDown(e) {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -735,7 +770,20 @@ export default function ChatPage({ session, onSignOut }) {
                 {msg.role === 'assistant' ? (
                   <MarkdownMessage content={msg.content} />
                 ) : (
-                  msg.content
+                  <>
+                    {msg.attachments?.length > 0 && (
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: msg.content ? 10 : 0 }}>
+                        {msg.attachments.map((attachment) => (
+                          attachment.type?.startsWith('video/') ? (
+                            <video key={attachment.id || attachment.name} src={attachment.src} controls style={{ maxWidth: 260, maxHeight: 180, borderRadius: 10 }} />
+                          ) : (
+                            <img key={attachment.id || attachment.name} src={attachment.src} alt={attachment.name} style={{ maxWidth: 260, maxHeight: 180, borderRadius: 10, objectFit: 'cover' }} />
+                          )
+                        ))}
+                      </div>
+                    )}
+                    {msg.content}
+                  </>
                 )}
                 {isStreaming && i === messages.length - 1 && msg.role === 'assistant' && (
                   <span
@@ -805,6 +853,20 @@ export default function ChatPage({ session, onSignOut }) {
               backdropFilter: 'blur(20px)',
             }}
           >
+            {attachments.length > 0 && (
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', padding: '10px 12px 0' }}>
+                {attachments.map((attachment) => (
+                  <div key={attachment.id} style={{ position: 'relative' }}>
+                    {attachment.type.startsWith('video/') ? (
+                      <video src={attachment.src} muted style={{ width: 72, height: 52, objectFit: 'cover', borderRadius: 8 }} />
+                    ) : (
+                      <img src={attachment.src} alt={attachment.name} style={{ width: 72, height: 52, objectFit: 'cover', borderRadius: 8 }} />
+                    )}
+                    <button type="button" onClick={() => removeAttachment(attachment.id)} title="Remove attachment" style={{ position: 'absolute', top: -7, right: -7, width: 20, height: 20, border: 0, borderRadius: '50%', background: '#ef4444', color: '#fff', cursor: 'pointer', lineHeight: 1 }}>×</button>
+                  </div>
+                ))}
+              </div>
+            )}
             <textarea
               ref={textareaRef}
               value={input}
@@ -814,6 +876,7 @@ export default function ChatPage({ session, onSignOut }) {
                 e.target.style.height = Math.min(e.target.scrollHeight, 200) + 'px';
               }}
               onKeyDown={handleKeyDown}
+              onPaste={handlePaste}
               placeholder="Message Dawood AI..."
               rows={1}
               style={{
@@ -874,7 +937,7 @@ export default function ChatPage({ session, onSignOut }) {
             ) : (
               <button
                 onClick={sendMessage}
-                disabled={!input.trim()}
+                disabled={!input.trim() && !attachments.length}
                 style={{
                   position: 'absolute',
                   right: 12,
@@ -883,11 +946,11 @@ export default function ChatPage({ session, onSignOut }) {
                   height: 36,
                   borderRadius: 10,
                   border: 'none',
-                  background: input.trim()
+                  background: input.trim() || attachments.length
                     ? 'linear-gradient(135deg, #00d4ff, #7c3aed)'
                     : 'rgba(255,255,255,0.06)',
-                  color: input.trim() ? '#fff' : '#334155',
-                  cursor: input.trim() ? 'pointer' : 'not-allowed',
+                  color: input.trim() || attachments.length ? '#fff' : '#334155',
+                  cursor: input.trim() || attachments.length ? 'pointer' : 'not-allowed',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',

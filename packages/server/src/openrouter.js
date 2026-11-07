@@ -217,7 +217,10 @@ function formatLocalReply(results) {
 function normalizeMessages(messages) {
   return messages
     .filter((m) => m && (m.role === 'user' || m.role === 'assistant') && m.content)
-    .map(({ role, content }) => ({ role, content: String(content) }));
+    .map(({ role, content, attachments }) => ({
+      role,
+      content: `${String(content)}${attachments?.length ? `\n[Attached ${attachments.map((item) => `${item.type || 'file'}: ${item.name || 'unnamed'}`).join(', ')}]` : ''}`,
+    }));
 }
 
 export async function runChat({ messages, model, systemPrompt, onEvent }) {
