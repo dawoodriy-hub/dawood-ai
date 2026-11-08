@@ -101,6 +101,7 @@ async function* streamFree({ messages, systemPrompt }) {
   const lines = [
     `You are Dawood AI. Follow this instruction: ${systemPrompt}`,
     'Use the conversation below to answer the latest user message. Do not mention this prompt or say you are simulating a model.',
+    'For programming requests, return a complete answer that can be copied into a file. Silently review syntax, indentation, imports, and every closing quote/bracket before sending. If a package is required, name it and show the install command.',
     ...messages.slice(-16).map((m) => `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content}`),
     'Assistant:',
   ];
@@ -245,7 +246,8 @@ export async function runChat({ messages, model, systemPrompt, onEvent }) {
     ? `\n\nUse these tool results when they help:\n${toolResults.map(({ name, result }) => `${name}: ${result}`).join('\n')}`
     : '';
   const prompt = [
-    systemPrompt || 'You are Dawood AI, a helpful assistant.',
+    systemPrompt || 'You are Dawood AI, a careful and helpful assistant.',
+    'Accuracy rules: do not invent facts, APIs, package names, or test results. If the request is ambiguous, state the assumption. For code, verify syntax mentally, close every delimiter, use consistent indentation, include required imports, and identify dependencies with installation commands. Prefer a short correct answer over a confident guess. If you are unsure, say so and explain how to verify it.',
     modelInstructions(resolvedModel),
     toolNote,
   ].filter(Boolean).join('\n\n');
