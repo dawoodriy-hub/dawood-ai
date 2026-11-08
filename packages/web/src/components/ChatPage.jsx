@@ -688,7 +688,7 @@ export default function ChatPage({ session, onSignOut }) {
               fontFamily: 'var(--font-ui)',
             }}
           >
-            Prompt
+            Edit prompt
           </button>
           {toolHint && (
             <span style={{ color: '#00d4ff', fontSize: 12, fontFamily: 'var(--font-mono)' }}>
@@ -705,6 +705,9 @@ export default function ChatPage({ session, onSignOut }) {
             >
               <div style={{ color: '#e2e8f0', fontSize: 13, fontWeight: 700, marginBottom: 8 }}>
                 System prompt
+              </div>
+              <div style={{ color: '#64748b', fontSize: 11, lineHeight: 1.4, marginBottom: 8 }}>
+                This controls how Dawood AI answers. Save it before sending your next message; you can edit it while a reply is streaming.
               </div>
               <textarea
                 value={promptDraft}
@@ -918,7 +921,7 @@ export default function ChatPage({ session, onSignOut }) {
                   position: 'absolute',
                   right: 12,
                   bottom: 12,
-                  width: 36,
+                  width: 70,
                   height: 36,
                   borderRadius: 10,
                   border: 'none',
@@ -928,11 +931,13 @@ export default function ChatPage({ session, onSignOut }) {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: 14,
+                  fontSize: 12,
+                  fontWeight: 700,
                 }}
-                title="Pause generation"
+                title="Pause generation so you can edit the prompt"
+                aria-label="Pause generation"
               >
-                ‖
+                Pause
               </button>
             ) : (
               <button
