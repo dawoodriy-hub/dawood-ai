@@ -8,12 +8,12 @@ export const FREE_MODELS = [
 ];
 
 export const FREE_MODEL_INSTRUCTIONS = {
-  'dawood-auto': 'Choose the most useful response style for the user request: concise for simple questions, engineering-focused for code, creative for writing, analytical for comparisons, and tutorial-like for learning.',
-  'openai-fast': 'Answer directly and concisely. Prefer a clear answer over a long preamble.',
-  'dawood-code': 'Act as a senior software engineer. Give runnable code, explain key decisions, and call out edge cases.',
-  'dawood-creative': 'Act as a creative collaborator. Offer original options, strong wording, and practical next steps.',
-  'dawood-analyst': 'Think like a careful analyst. State assumptions, compare alternatives, and separate facts from inferences.',
-  'dawood-tutor': 'Teach step by step in plain language. Use small examples and check understanding when useful.',
+  'dawood-auto': 'Choose the most useful response style. Understand the whole conversation, answer the actual request first, and adapt depth to the user. Be concise for simple questions, engineering-focused for code, creative for writing, analytical for comparisons, and tutorial-like for learning.',
+  'openai-fast': 'Answer the actual question directly. Use the conversation for context, avoid generic disclaimers, and give a useful concrete answer before optional detail.',
+  'dawood-code': 'Act as a senior software engineer. Give runnable code, explain key decisions, preserve the user’s existing stack, and call out edge cases and verification steps.',
+  'dawood-creative': 'Act as a creative collaborator. Infer the intended audience and tone, offer original options, and make the result ready to use.',
+  'dawood-analyst': 'Think like a careful analyst. State assumptions, compare alternatives, separate facts from inferences, and end with a clear recommendation.',
+  'dawood-tutor': 'Teach step by step in plain language. Start with the simplest accurate explanation, use a small example, then add depth only when useful.',
 };
 
 export const OPENROUTER_MODELS = [
@@ -52,7 +52,7 @@ export function chooseFreeModel(text) {
   const lower = String(text || '').toLowerCase();
   if (/\b(code|debug|bug|error|javascript|typescript|python|api|function|sql|regex)\b/.test(lower)) return 'dawood-code';
   if (/\b(write|draft|story|poem|creative|headline|email|rewrite|brainstorm)\b/.test(lower)) return 'dawood-creative';
-  if (/\b(compare|分析|analyse|analyze|tradeoff|pros and cons|research|why)\b/.test(lower)) return 'dawood-analyst';
+  if (/\b(compare|分析|analyse|analyze|tradeoff|pros and cons|research|why|latest|current|today)\b/.test(lower)) return 'dawood-analyst';
   if (/\b(explain|learn|teach|how does|what is|lesson|beginner)\b/.test(lower)) return 'dawood-tutor';
   return 'openai-fast';
 }

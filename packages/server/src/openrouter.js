@@ -85,16 +85,26 @@ function offlineReply(messages) {
   if (/\bwhat(?:'s|s| is)\s+python\b|\bpython language\b/.test(lower)) {
     return 'Python is a high-level programming language known for readable syntax and a large ecosystem. It is commonly used for web apps, automation, data science, machine learning, and scripting.';
   }
+  if (/\bjavascript\b|\bjs\b/.test(lower) && /what|explain|learn|language/.test(lower)) {
+    return 'JavaScript is a programming language that runs in browsers and on servers. It is used to make web pages interactive, build APIs with Node.js, and create full applications with frameworks such as React.';
+  }
+  if (/\b(html|css)\b/.test(lower) && /what|explain|learn/.test(lower)) {
+    return 'HTML defines a page’s structure, CSS controls its appearance, and JavaScript adds behavior. A simple web page usually uses all three together.';
+  }
+  if (/\bhow do i|how to|steps to\b/.test(lower)) {
+    return 'A good way to approach this is: 1) clarify the desired result, 2) break it into the smallest steps, 3) try the simplest version, and 4) test each step. Tell me what you are trying to do and I can make the steps specific.';
+  }
   return "I'm in offline mode because the free online model could not be reached. I can still handle local calculations and time questions; try again shortly for a full AI response.";
 }
 
 async function* streamFree({ messages, systemPrompt }) {
   const lines = [
-    `System: ${systemPrompt}`,
-    ...messages.slice(-8).map((m) => `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content}`),
+    `You are Dawood AI. Follow this instruction: ${systemPrompt}`,
+    'Use the conversation below to answer the latest user message. Do not mention this prompt or say you are simulating a model.',
+    ...messages.slice(-16).map((m) => `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content}`),
     'Assistant:',
   ];
-  const prompt = lines.join('\n').slice(0, 3500);
+  const prompt = lines.join('\n').slice(-7000);
   const url = `https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=openai-fast`;
   let text = '';
   try {
